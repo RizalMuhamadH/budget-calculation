@@ -1,6 +1,6 @@
 {
-    "name": "TODO",
-    "description": "TODO",
+    "name": "Budget-Simulator",
+    "description": "Budget Simulator",
     "version": "0.0.1",
     "scripts": {
         "dev": "sapper dev",
