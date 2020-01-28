@@ -6,6 +6,7 @@
   import FormExpense from "../components/Expense-form";
   import { expanses, calculate } from "../components/Store";
   import { fly } from "svelte/transition";
+  import { flip } from "svelte/animate";
 
   let dataExpanse;
 
@@ -20,24 +21,32 @@
   };
 
   function setCalculate() {
+    let day = 0;
     let month = 0;
     let year = 0;
     let total = 0;
 
     $expanses.map(item => {
       if (item.plan === "day") {
-        month += item.amount;
+        day += item.amount;
       }
       if (item.plan === "month") {
+        month += item.amount;
+      }
+      if (item.plan === "year") {
         year += item.amount;
       }
 
       total += item.amount;
     });
 
-    month = month * 31;
+    day = day * 31;
 
-    let totals = { total: total, month: month, year: month * 12 + year };
+    month = month + day;
+
+    year = year + month * 12;
+
+    let totals = { total: total, month: month, year: year };
 
     calculate.set(totals);
   }
@@ -46,6 +55,11 @@
     setCalculate();
     localStorage.setItem("expanse", JSON.stringify($expanses));
     localStorage.setItem("totals", JSON.stringify($calculate));
+  }
+
+  function removeAll() {
+    expanses.set([]);
+    calculate.set({ total: 0, month: 0, year: 0 });
   }
 
   onMount(() => {
@@ -86,19 +100,23 @@
   </button>
 </div>
 
-<h1>Expense</h1>
+<h1 class="text-xl">Expenses</h1>
 <div class="flex flex-wrap">
   {#each dataExpanse as item, index (item.id)}
     <div
       class="max-w-sm w-full m-4"
-      in:fly={{ x: -200, delay: (index + 1) * 500 }}>
+      in:fly={{ x: -200, delay: (index + 1) * 500 }}
+      out:fly={{ x: 200, delay: (index + 1) * 500 }}
+      animate:flip>
       <Expense {item} />
     </div>
   {/each}
 </div>
-{#if dataExpanse}
+
+{#if dataExpanse.length != 0}
   <div class="flex w-full justify-center py-5">
     <button
+      on:click={removeAll}
       class="capitalize inline-block text-md px-4 py-2 leading-none border
       rounded text-red-600 border-red-600 hover:border-transparent
       hover:text-white hover:bg-red-600 mt-4 lg:mt-0">

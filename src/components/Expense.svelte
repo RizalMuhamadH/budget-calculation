@@ -130,7 +130,7 @@
           <span
             class="content-center inline-block bg-gray-200 rounded-full px-3
             py-1 text-sm font-semibold text-gray-700 mt-2">
-            {item.plan === 'month' ? item.amount * 12 : item.plan === 'year' ? item.amount : 0}
+            {item.plan === 'day' ? item.amount * 31 * 12 : item.plan === 'month' ? item.amount * 12 : item.plan === 'year' ? item.amount : 0}
           </span>
         </div>
       </div>
